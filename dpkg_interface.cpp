@@ -30,8 +30,9 @@ PackageArray::pkgiter::pkgiter(PackageArray* pParent, size_t index)
 {
 }
 
-PackageArray::pkgiter::~pkgiter() {
-}
+PackageArray::pkgiter::pkgiter() {}
+
+PackageArray::pkgiter::~pkgiter() {}
 
 pkginfo* PackageArray::pkgiter::operator *() {
     return (pkginfo*)m_pParent->m_array.pkgs[m_nIndex];
@@ -81,7 +82,7 @@ bool dpkg_system_open() {
     standard_startup();
     modstatdb_init();
     modstatdb_open(msdbrw_readonly);
-
+    printf("Using directory : %s\n", dpkg_db_get_dir());
     return true;
 }
 

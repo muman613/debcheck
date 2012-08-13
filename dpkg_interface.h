@@ -17,13 +17,10 @@ public:
     void   init();
     size_t size();
 
-    struct pkg_array m_array;
 
     class pkgiter {
     public:
-        pkgiter() {};
-
-        pkgiter(PackageArray* pParent, size_t nIndex = 0);
+        pkgiter();
         virtual ~pkgiter();
 
         pkginfo* operator *();
@@ -31,6 +28,10 @@ public:
         pkgiter& operator = (const pkgiter& copy);
         bool operator !=(const pkgiter& comp);
         const pkgiter& operator++(int);
+    protected:
+        friend class PackageArray;
+
+        pkgiter(PackageArray* pParent, size_t nIndex = 0);
 
     private:
         PackageArray*   m_pParent;
@@ -41,6 +42,9 @@ public:
     pkgiter end();
 
 protected:
+    friend class pkgiter;
+
+    struct pkg_array m_array;
 private:
 };
 

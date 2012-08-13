@@ -27,18 +27,25 @@
 					<Add option="-s" />
 				</Linker>
 			</Target>
+			<Environment>
+				<Variable name="DPKG_PATH" value="/home/muman/dev/dpkg-1.16.1.2ubuntu7/" />
+			</Environment>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
-			<Add directory="../dpkg-1.15.5.6ubuntu4.5" />
-			<Add directory="../dpkg-1.15.5.6ubuntu4.5/lib" />
-			<Add directory="../dpkg-1.15.5.6ubuntu4.5/lib/compat" />
+			<Add directory="$(DPKG_PATH)" />
+			<Add directory="$(DPKG_PATH)/lib" />
+			<Add directory="$(DPKG_PATH)/lib/compat" />
 		</Compiler>
 		<Linker>
-			<Add directory="../dpkg-1.15.5.6ubuntu4.5/lib/compat" />
-			<Add directory="../dpkg-1.15.5.6ubuntu4.5/lib/dpkg" />
+			<Add library="dpkg" />
+			<Add library="compat" />
+			<Add directory="$(DPKG_PATH)/lib/compat" />
+			<Add directory="$(DPKG_PATH)/lib/dpkg" />
 		</Linker>
+		<Unit filename="dpkg_interface.cpp" />
+		<Unit filename="dpkg_interface.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
