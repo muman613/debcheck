@@ -19,41 +19,55 @@
 #include <dpkg/dpkg-db.h>
 #include <dpkg/pkg-array.h>
 #include <dpkg/path.h>
-#include <dpkg/myopt.h>
+//#include <dpkg/myopt.h>
+#include "dpkg_interface.h"
 
 using namespace std;
 
-const char* admindir   = "/var/lib/dpkg";
-const char  thisname[] = "debcheck";
+//const char* admindir   = "/var/lib/dpkg";
+//const char  thisname[] = "debcheck";
 
 /**
  *
  */
 
 int main() {
-    jmp_buf ejbuf;
-    struct pkg_array array;
+    //struct pkg_array array;
+    //struct pkginfo *pkg;
+
+    if (!dpkg_system_open()) {
+        fprintf(stderr, "ERROR: Unable to open dpkg library!\n");
+        return -1;
+    }
+
+#if 1
+    PackageArray    pkgArray;
+    PackageArray::pkgiter pIter;
     struct pkginfo *pkg;
 
-    standard_startup(&ejbuf);
+    for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
+        pkg = *pIter;
+        if (pkg->status == pkginfo::stat_notinstalled) continue;
+        printf("%-40s %s-%s\n", pkg->set->name,
+                                pkg->configversion.version,
+                                pkg->configversion.revision);
+    }
 
-    modstatdb_init(admindir,msdbrw_readonly);
-
+#else
     pkg_array_init_from_db(&array);
     pkg_array_sort(&array, pkg_sorter_by_name);
 
     for (int i = 0; i < array.n_pkgs; i++) {
         pkg = array.pkgs[i];
         if (pkg->status == pkginfo::stat_notinstalled) continue;
-        printf("%-40s %s-%s\n", pkg->name,
+        printf("%-40s %s-%s\n", pkg->set->name,
                                 pkg->configversion.version,
                                 pkg->configversion.revision);
 //      list1package(pkg, &head, &array);
     }
+#endif
 
-    pkg_array_free(&array);
-    modstatdb_shutdown();
-    standard_shutdown();
+    dpkg_system_close();
 
     return 0;
 }
