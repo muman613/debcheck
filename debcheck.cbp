@@ -28,25 +28,30 @@
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="DPKG_PATH" value="/home/muman/dev/dpkg-1.16.1.2ubuntu7/" />
+				<Variable name="DPKG_PATH" value="../dpkg-1.16.1.2ubuntu7" />
 			</Environment>
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
+			<Add option="`xml2-config --cflags`" />
 			<Add directory="$(DPKG_PATH)" />
 			<Add directory="$(DPKG_PATH)/lib" />
 			<Add directory="$(DPKG_PATH)/lib/compat" />
 		</Compiler>
 		<Linker>
+			<Add option="`xml2-config --libs`" />
 			<Add library="dpkg" />
 			<Add library="compat" />
+			<Add library="popt" />
 			<Add directory="$(DPKG_PATH)/lib/compat" />
 			<Add directory="$(DPKG_PATH)/lib/dpkg" />
 		</Linker>
 		<Unit filename="dpkg_interface.cpp" />
 		<Unit filename="dpkg_interface.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="xml_interface.cpp" />
+		<Unit filename="xml_interface.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
