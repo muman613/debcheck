@@ -32,6 +32,10 @@ int main(int argc, const char* argv[]) {
 
     dpkg_dump_installed();
 
+    if (dpkg_is_package_installed("antiword", "0.37-6")) {
+        printf("Package is installed!\n");
+    }
+
     dpkg_system_close();
 
     return 0;
