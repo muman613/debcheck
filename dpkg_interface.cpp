@@ -7,7 +7,7 @@
 
 PackageArray::PackageArray()
 {
-    init();
+    //init();
 }
 
 PackageArray::~PackageArray()
@@ -72,6 +72,8 @@ PackageArray::pkgiter PackageArray::end()
     return thisIter;
 }
 
+PackageArray            pkgArray;
+
 /**
  *
  */
@@ -82,7 +84,10 @@ bool dpkg_system_open() {
     standard_startup();
     modstatdb_init();
     modstatdb_open(msdbrw_readonly);
-    printf("Using directory : %s\n", dpkg_db_get_dir());
+    //printf("Using directory : %s\n", dpkg_db_get_dir());
+
+    pkgArray.init();
+
     return true;
 }
 
@@ -93,9 +98,12 @@ void dpkg_system_close() {
     return;
 }
 
-void dpkg_dump_installed(FILE* fOut)
-{
-    PackageArray            pkgArray;
+
+/**
+ *  Dump all installed package names to FILE...
+ */
+
+void dpkg_dump_installed(FILE* fOut) {
     PackageArray::pkgiter   pIter;
     struct pkginfo*         pkg;
     const char*             sVersion;
@@ -112,4 +120,36 @@ void dpkg_dump_installed(FILE* fOut)
     }
 
     return;
+}
+
+/**
+ *  Determine if a package is installed.
+ */
+
+bool dpkg_is_package_installed(const char* szPackageName,
+                          const char* szPackageRevision)
+{
+    PackageArray::pkgiter   pIter;
+    struct pkginfo*         pkg;
+    const char*             sVersion;
+
+    for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
+        pkg = *pIter;
+
+        if (strcmp(szPackageName, pkg->set->name) == 0) {
+            if (szPackageRevision != 0L) {
+                sVersion = versiondescribe( &pkg->configversion, vdew_nonambig);
+
+                if (strcmp(szPackageRevision, sVersion) == 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return true;
+            }
+        }
+    }
+
+    return false;
 }

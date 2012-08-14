@@ -53,4 +53,6 @@ void dpkg_system_close();
 
 void dpkg_dump_installed(FILE* fOut = stdout);
 
+bool dpkg_is_package_installed(const char* szPackageName, const char* szPackageRevision);
+
 #endif // __DPKG_INTERFACE__
