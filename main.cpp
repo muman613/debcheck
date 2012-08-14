@@ -16,6 +16,8 @@
 #include <popt.h>
 
 #include "dpkg_interface.h"
+#include "xml_interface.h"
+#include "debPackageDB.h"
 
 using namespace std;
 
@@ -57,6 +59,8 @@ bool parse_args(int argc, const char* argv[])
  */
 
 int main(int argc, const char* argv[]) {
+    debPackageDB    packageDB;
+
     if (!parse_args( argc, argv )) {
         return -10;
     }
@@ -68,7 +72,13 @@ int main(int argc, const char* argv[]) {
         return -1;
     }
 
+    if (xml_load_controlfile( szControlFile, packageDB)) {
+
+    }
+
+#if 0
     dpkg_dump_installed();
+#endif
 
     if (dpkg_is_package_installed("antiword", NULL)) {
 
