@@ -51,5 +51,6 @@ private:
 bool dpkg_system_open();
 void dpkg_system_close();
 
+void dpkg_dump_installed(FILE* fOut = stdout);
 
 #endif // __DPKG_INTERFACE__

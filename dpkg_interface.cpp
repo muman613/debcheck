@@ -92,3 +92,24 @@ void dpkg_system_close() {
 
     return;
 }
+
+void dpkg_dump_installed(FILE* fOut)
+{
+    PackageArray            pkgArray;
+    PackageArray::pkgiter   pIter;
+    struct pkginfo*         pkg;
+    const char*             sVersion;
+
+    for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
+        pkg = *pIter;
+
+        if (pkg->status == pkginfo::stat_notinstalled)
+            continue;
+
+        sVersion = versiondescribe( &pkg->configversion, vdew_nonambig);
+
+        printf("%-40s : %s\n", pkg->set->name, sVersion);
+    }
+
+    return;
+}
