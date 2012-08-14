@@ -1,3 +1,9 @@
+/**
+ *  @file   dpkg_interface.cpp
+ *  @author Michael Uman
+ *  @date   August 13, 2012
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "dpkg_interface.h"
@@ -23,6 +29,10 @@ void PackageArray::init() {
 size_t PackageArray::size() {
     return m_array.n_pkgs;
 }
+
+/**
+ *  Iterator class.
+ */
 
 PackageArray::pkgiter::pkgiter(PackageArray* pParent, size_t index)
 :   m_pParent(pParent),
@@ -82,9 +92,14 @@ bool dpkg_system_open() {
     standard_startup();
     modstatdb_init();
     modstatdb_open(msdbrw_readonly);
-    printf("Using directory : %s\n", dpkg_db_get_dir());
+    //printf("Using directory : %s\n", dpkg_db_get_dir());
+
     return true;
 }
+
+/**
+ *
+ */
 
 void dpkg_system_close() {
     modstatdb_shutdown();
@@ -92,6 +107,10 @@ void dpkg_system_close() {
 
     return;
 }
+
+/**
+ *  Dump all installed package names to FILE...
+ */
 
 void dpkg_dump_installed(FILE* fOut)
 {
