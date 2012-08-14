@@ -166,3 +166,27 @@ bool dpkg_is_package_installed(const char* szPackageName,
 
     return false;
 }
+
+/**
+ *  Get the version for a package...
+ */
+
+bool dpkg_get_package_version(const char* szPackageName, char* sDstVersion, size_t len)
+{
+    PackageArray::pkgiter   pIter;
+    struct pkginfo*         pkg         = NULL;
+    const char*             sVersion    = NULL;
+
+    for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
+        pkg = *pIter;
+
+        if (strcmp(szPackageName, pkg->set->name) == 0) {
+            sVersion = versiondescribe( &pkg->configversion, vdew_nonambig );
+            strncpy(sDstVersion, sVersion, len);
+
+            return true;
+        }
+    }
+
+    return false;
+}

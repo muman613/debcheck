@@ -9,6 +9,10 @@
 #include <dpkg/pkg-array.h>
 #include <dpkg/path.h>
 
+/**
+ *  This class encapsulates the dpkg array.
+ */
+
 class PackageArray {
 public:
     PackageArray();
@@ -17,7 +21,7 @@ public:
     void   init();
     size_t size();
 
-
+    /** Iterator class */
     class pkgiter {
     public:
         pkgiter();
@@ -25,9 +29,10 @@ public:
 
         pkginfo* operator *();
 
-        pkgiter& operator = (const pkgiter& copy);
-        bool operator !=(const pkgiter& comp);
+        pkgiter&       operator = (const pkgiter& copy);
+        bool           operator !=(const pkgiter& comp);
         const pkgiter& operator++(int);
+
     protected:
         friend class PackageArray;
 
@@ -38,8 +43,8 @@ public:
         size_t          m_nIndex;
     };
 
-    pkgiter begin();
-    pkgiter end();
+    pkgiter begin();    ///< Return iterator for first element
+    pkgiter end();      ///< Return iterator for last element
 
 protected:
     friend class pkgiter;
@@ -54,5 +59,6 @@ void dpkg_system_close();
 void dpkg_dump_installed(FILE* fOut = stdout);
 
 bool dpkg_is_package_installed(const char* szPackageName, const char* szPackageRevision);
+bool dpkg_get_package_version(const char* szPackageName, char* sVersion, size_t len);
 
 #endif // __DPKG_INTERFACE__
