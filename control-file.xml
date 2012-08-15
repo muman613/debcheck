@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<debcheck>
+	<package>
+		<name>tcl8.5-dev</name>
+		<version>8.5.8-2</version>
+	</package>
+	<package>
+		<name>libtar-dev</name>
+		<version>1.2.11-6</version>
+	</package>
+</debcheck>
+
