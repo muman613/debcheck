@@ -31,7 +31,24 @@ bool xml_load_controlfile(const char* szControlName, debPackageDB& packDB){
                                       nIt++)
                 {
                     xmlNodePtr pPackNode = *nIt;
+                    STRING     packageName, packageVersion;
 
+                    if (!xml_get_child_contents(pPackNode,
+                                               XML_TAG_PACK_NAME,
+                                               packageName))
+                    {
+                        fprintf(stderr, "ERROR: Package name must be specified!\n");
+                        return false;
+                    }
+
+                    if (!xml_get_child_contents(pPackNode,
+                                               XML_TAG_PACK_VERSION,
+                                               packageVersion))
+                    {
+                        packageVersion = "*";
+                    }
+
+                    packDB.Add( packageName, packageVersion );
                 }
             }
         }
@@ -68,4 +85,28 @@ bool    xml_find_all_tags(xmlNodePtr pNode,
     }
 
     return (tagVec.size() > 0);
+}
+
+/**
+ *
+ */
+
+bool xml_get_child_contents(xmlNodePtr pParent,
+                            STRING sNodeName,
+                            STRING& sNodeContent)
+{
+    xmlNodePtr  pThis = pParent->children;
+
+    while (pThis != 0L) {
+        if ((pThis->type == XML_ELEMENT_NODE) &&
+            (xmlStrcmp(pThis->name, BAD_CAST sNodeName.c_str()) == 0))
+        {
+            char*    pContent = (char *)xmlNodeGetContent( pThis );
+            sNodeContent = pContent;
+            return true;
+        }
+
+        pThis = pThis->next;
+    }
+    return false;
 }

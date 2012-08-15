@@ -62,6 +62,9 @@ void debPackageDB::Add(STRING sPackageName, STRING sPackageVersion)
 {
     debPackage      newPackage(sPackageName, sPackageVersion);
 
+    fprintf(stdout, "Adding package %s version %s\n",
+            sPackageName.c_str(),
+            sPackageVersion.c_str());
     m_packageVec.push_back( newPackage );
 }
 

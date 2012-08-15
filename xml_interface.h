@@ -22,6 +22,10 @@ bool xml_find_all_tags(xmlNodePtr pNode,
                        STRING tag,
                        NODE_VECTOR& tagVec);
 
+bool xml_get_child_contents(xmlNodePtr pParent,
+                            STRING sNodeName,
+                            STRING& sNodeContent);
+
 
 #define     XML_TAG_DEBCHECK        "debcheck"
 #define     XML_TAG_PACKAGE         "package"
