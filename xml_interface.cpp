@@ -1,9 +1,17 @@
+/**
+ *  @file       xml_interface.cpp
+ *  @author     Michael A. Uman
+ *  @date       August 15, 2012
+ *  @brief      This file contains the xml interface for debcheck.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "xml_interface.h"
 #include "debPackageDB.h"
+#include "dbgutils.h"
 
 /**
  *
@@ -21,10 +29,11 @@ bool xml_load_controlfile(const char* szControlName, debPackageDB& packDB){
         if ( xmlStrcmp(pRoot->name, BAD_CAST XML_TAG_DEBCHECK) == 0 ) {
             NODE_VECTOR packageNodeVec;
 
-            printf("found root node!\n");
+            D(ebug("found root node!\n"));
 
             if (xml_find_all_tags(pRoot, XML_TAG_PACKAGE, packageNodeVec)) {
-                printf("found %ld packages!\n", packageNodeVec.size());
+
+                D(ebug("found %ld packages!\n", packageNodeVec.size()));
 
                 for (NODE_VECTOR_ITER nIt = packageNodeVec.begin();
                                       nIt != packageNodeVec.end();
@@ -48,12 +57,13 @@ bool xml_load_controlfile(const char* szControlName, debPackageDB& packDB){
                         packageVersion = "*";
                     }
 
+                    /* Add the package to the database */
                     packDB.Add( packageName, packageVersion );
                 }
             }
         }
-//      packDB.clear();
 
+        /* free the document */
         xmlFreeDoc( pDoc );
         bRes = true;
     }
@@ -71,9 +81,8 @@ bool    xml_find_all_tags(xmlNodePtr pNode,
 {
     xmlNodePtr  pThisNode = pNode->children;
 
-#ifdef  DEBUG
-    fprintf(stderr, "find_all_tags(%p, %s, ...)\n", pNode, tag.c_str());
-#endif
+
+    D(ebug("find_all_tags(%p, %s, ...)\n", pNode, tag.c_str()));
 
     while (pThisNode != 0) {
         if ((pThisNode->type == XML_ELEMENT_NODE) &&
@@ -84,7 +93,7 @@ bool    xml_find_all_tags(xmlNodePtr pNode,
         pThisNode = pThisNode->next;
     }
 
-    return (tagVec.size() > 0);
+    return (tagVec.size() > 0); // Return true if tags were found.
 }
 
 /**
@@ -103,6 +112,8 @@ bool xml_get_child_contents(xmlNodePtr pParent,
         {
             char*    pContent = (char *)xmlNodeGetContent( pThis );
             sNodeContent = pContent;
+            xmlFree( pContent );
+
             return true;
         }
 
