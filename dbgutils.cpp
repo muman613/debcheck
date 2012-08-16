@@ -1,5 +1,8 @@
 /**
- *
+ *  @file       dbgutils.cpp
+ *  @author     Michael A. Uman
+ *  @date       August 15, 2012
+ *  @brief      Contains nifty and crafty little debug formatter...
  */
 
 #include <stdio.h>
