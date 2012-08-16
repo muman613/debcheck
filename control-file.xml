@@ -8,5 +8,9 @@
 		<name>libtar-dev</name>
 		<version>1.2.11-6</version>
 	</package>
+	<package>
+		<name>bash</name>
+		<version>4.2-2ubuntu2</version>
+	</package>
 </debcheck>
 
