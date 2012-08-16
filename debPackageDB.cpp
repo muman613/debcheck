@@ -1,5 +1,13 @@
-#include "debPackageDB.h"
+/**
+ *  @file       debPackageDB.cpp
+ *  @author     Michael A. Uman
+ *  @date       August 15, 2012
+ *  @brief      This file contains the definition of debPackage and
+ *              debPackageDB.
+ */
 
+#include "debPackageDB.h"
+#include "dbgutils.h"
 
 debPackage::debPackage(STRING sPackageName, STRING sPackageVersion)
 :   m_sPackageName(sPackageName),
@@ -43,11 +51,13 @@ debPackage& debPackage::operator = (const debPackage& copy)
 debPackageDB::debPackageDB()
 {
     //ctor
+    D(ebug("debPackageDB::debPackageDB()\n"));
 }
 
 debPackageDB::~debPackageDB()
 {
     //dtor
+    D(ebug("debPackageDB::~debPackageDB()\n"));
 }
 
 size_t debPackageDB::size() {
@@ -62,22 +72,37 @@ void debPackageDB::Add(STRING sPackageName, STRING sPackageVersion)
 {
     debPackage      newPackage(sPackageName, sPackageVersion);
 
-    fprintf(stdout, "Adding package %s version %s\n",
+    D(ebug("Adding package %s version %s\n",
             sPackageName.c_str(),
-            sPackageVersion.c_str());
+            sPackageVersion.c_str()));
+
     m_packageVec.push_back( newPackage );
 }
 
+/**
+ *  Send list of all packages in database to output.
+ */
+
 void debPackageDB::Dump(FILE* fOut) {
+    fprintf(fOut, "debPackageDB::Dump\n");
+
     for (size_t i = 0 ; i < size() ; i++) {
-        fprintf(fOut, "%-40s : %s", m_packageVec[i].PackageName().c_str(),
+        fprintf(fOut, "%-40s : %s\n", m_packageVec[i].PackageName().c_str(),
                m_packageVec[i].PackageVersion().c_str());
     }
 }
 
+/**
+ *  Return iterator pointing to first element in vector.
+ */
+
 DEB_PACKAGE_VECTOR_ITER debPackageDB::begin() {
     return m_packageVec.begin();
 }
+
+/**
+ *  Return iterator pointing to last element in vector.
+ */
 
 DEB_PACKAGE_VECTOR_ITER debPackageDB::end() {
     return m_packageVec.end();
