@@ -1,3 +1,9 @@
+/**
+ *  @file   dpkg_interface.cpp
+ *  @author Michael Uman
+ *  @date   August 13, 2012
+ */
+
 #ifndef __DPKG_INTERFACE__
 #define __DPKG_INTERFACE__
 
@@ -8,6 +14,8 @@
 #include <dpkg/dpkg-db.h>
 #include <dpkg/pkg-array.h>
 #include <dpkg/path.h>
+
+#include "basicTypes.h"
 
 /**
  *  This class encapsulates the dpkg array.
@@ -60,5 +68,6 @@ void dpkg_dump_installed(FILE* fOut = stdout);
 
 bool dpkg_is_package_installed(const char* szPackageName, const char* szPackageRevision);
 bool dpkg_get_package_version(const char* szPackageName, char* sVersion, size_t len);
+bool dpkg_get_package_version(const char* szPackageName, STRING& sVersion);
 
 #endif // __DPKG_INTERFACE__

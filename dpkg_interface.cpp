@@ -6,10 +6,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "dpkg_interface.h"
 #include <iostream>
 #include <sys/types.h>
 #include <sys/stat.h>
+#include "dpkg_interface.h"
+#include "dbgutils.h"
 
 PackageArray::PackageArray()
 {
@@ -89,7 +90,7 @@ PackageArray            pkgArray;
  */
 
 bool dpkg_system_open() {
-    fprintf(stderr, "dpkg_system_open()\n");
+    D(ebug("dpkg_system_open()\n"));
 
     standard_startup();
     modstatdb_init();
@@ -106,6 +107,8 @@ bool dpkg_system_open() {
  */
 
 void dpkg_system_close() {
+    D(ebug("dpkg_system_close()\n"));
+
     modstatdb_shutdown();
     standard_shutdown();
 
@@ -146,6 +149,10 @@ bool dpkg_is_package_installed(const char* szPackageName,
     struct pkginfo*         pkg;
     const char*             sVersion;
 
+    D(ebug("dpkg_is_package_installed(%s, %s)\n",
+           szPackageName,
+           szPackageRevision));
+
     for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
         pkg = *pIter;
 
@@ -177,6 +184,9 @@ bool dpkg_get_package_version(const char* szPackageName, char* sDstVersion, size
     struct pkginfo*         pkg         = NULL;
     const char*             sVersion    = NULL;
 
+    D(ebug("dpkg_get_package_version(%s, %p, %d)\n",
+           szPackageName, sDstVersion, len));
+
     for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
         pkg = *pIter;
 
@@ -184,6 +194,29 @@ bool dpkg_get_package_version(const char* szPackageName, char* sDstVersion, size
             sVersion = versiondescribe( &pkg->configversion, vdew_nonambig );
             strncpy(sDstVersion, sVersion, len);
 
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ *  Get the version for a package (Overloaded)...
+ */
+
+bool dpkg_get_package_version(const char* szPackageName, STRING& sDstVersion)
+{
+    PackageArray::pkgiter   pIter;
+    struct pkginfo*         pkg         = NULL;
+
+    D(ebug("dpkg_get_package_version(%s, ...)\n", szPackageName));
+
+    for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
+        pkg = *pIter;
+
+        if (strcmp(szPackageName, pkg->set->name) == 0) {
+            sDstVersion = versiondescribe( &pkg->configversion, vdew_nonambig );
             return true;
         }
     }
