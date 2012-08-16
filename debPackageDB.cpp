@@ -84,7 +84,7 @@ void debPackageDB::Add(STRING sPackageName, STRING sPackageVersion)
  */
 
 void debPackageDB::Dump(FILE* fOut) {
-    fprintf(fOut, "debPackageDB::Dump\n");
+    D(ebug("debPackageDB::Dump\n"));
 
     for (size_t i = 0 ; i < size() ; i++) {
         fprintf(fOut, "%-40s : %s\n", m_packageVec[i].PackageName().c_str(),
