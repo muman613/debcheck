@@ -12,6 +12,10 @@
 #include "dpkg_interface.h"
 #include "dbgutils.h"
 
+/**
+ *  PackageArray is used to hold the package database array.
+ */
+
 PackageArray::PackageArray()
 {
     //init();
@@ -21,6 +25,10 @@ PackageArray::~PackageArray()
 {
 
 }
+
+/**
+ *  Initialize the array from the dpkg database and sort by name.
+ */
 
 void PackageArray::init() {
     pkg_array_init_from_db(&m_array);
@@ -41,9 +49,9 @@ PackageArray::pkgiter::pkgiter(PackageArray* pParent, size_t index)
 {
 }
 
-PackageArray::pkgiter::pkgiter() {}
-
-PackageArray::pkgiter::~pkgiter() {}
+/**
+ *  Iterator de-reference operator.
+ */
 
 pkginfo* PackageArray::pkgiter::operator *() {
     return (pkginfo*)m_pParent->m_array.pkgs[m_nIndex];
@@ -183,6 +191,8 @@ bool dpkg_get_package_version(const char* szPackageName, char* sDstVersion, size
     PackageArray::pkgiter   pIter;
     struct pkginfo*         pkg         = NULL;
     const char*             sVersion    = NULL;
+
+    assert( sDstVersion != 0L );
 
     D(ebug("dpkg_get_package_version(%s, %p, %d)\n",
            szPackageName, sDstVersion, len));

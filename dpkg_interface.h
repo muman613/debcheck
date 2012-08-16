@@ -32,8 +32,8 @@ public:
     /** Iterator class */
     class pkgiter {
     public:
-        pkgiter();
-        virtual ~pkgiter();
+        pkgiter() {};
+        virtual ~pkgiter() {};
 
         pkginfo* operator *();
 
@@ -66,8 +66,10 @@ void dpkg_system_close();
 
 void dpkg_dump_installed(FILE* fOut = stdout);
 
-bool dpkg_is_package_installed(const char* szPackageName, const char* szPackageRevision);
-bool dpkg_get_package_version(const char* szPackageName, char* sVersion, size_t len);
+bool dpkg_is_package_installed(const char* szPackageName,
+                               const char* szPackageRevision = 0L);
+bool dpkg_get_package_version(const char* szPackageName,
+                              char* sVersion, size_t len);
 bool dpkg_get_package_version(const char* szPackageName, STRING& sVersion);
 
 #endif // __DPKG_INTERFACE__
