@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <popt.h>
 
+#include "basicTypes.h"
 #include "dpkg_interface.h"
 #include "xml_interface.h"
 #include "debPackageDB.h"
@@ -65,28 +66,34 @@ int main(int argc, const char* argv[]) {
         return -10;
     }
 
-    printf("Control file = %s\n", szControlFile);
+//    printf("Control file = %s\n", szControlFile);
 
     if (!dpkg_system_open()) {
         fprintf(stderr, "ERROR: Unable to open dpkg library!\n");
         return -1;
     }
 
-    if (xml_load_controlfile( szControlFile, packageDB)) {
+    if (xml_load_controlfile( szControlFile, packageDB )) {
+        printf("-- control file loaded ok!\n");
+        packageDB.Dump(stdout);
 
-    }
-
-#if 0
-    dpkg_dump_installed();
+#ifdef _EXTRA_EXTRA_DEBUG
+        dpkg_dump_installed();
 #endif
 
-    if (dpkg_is_package_installed("antiword", NULL)) {
+        if (dpkg_is_package_installed("antiword", NULL)) {
 
-        printf("Package is installed!\n");
+            printf("Package is installed!\n");
 
-        if (dpkg_is_package_installed("antiword", "0.37-6")) {
-            printf("Package 0.37-6 is installed!\n");
+            if (dpkg_is_package_installed("antiword", "0.37-6")) {
+                printf("Package 0.37-6 is installed!\n");
+            } else {
+                STRING sVersion;
+                dpkg_get_package_version("antiword", sVersion);
+                printf("antiword version %s is installed!\n", sVersion.c_str());
+            }
         }
+    } else {
     }
 
     dpkg_system_close();
