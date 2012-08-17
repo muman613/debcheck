@@ -121,7 +121,8 @@ int main(int argc, const char* argv[]) {
             {
                 STRING sActualVers;
 
-                if (dpkg_get_package_version( sPackName.c_str(), sActualVers)) {
+                if (dpkg_get_package_version( sPackName.c_str(), sActualVers ))
+                {
                     printf("WARNING: Package %s installed BUT version %s NOT version %s!\n",
                            sPackName.c_str(), sActualVers.c_str(), sPackVers.c_str());
                     cntInstWrongVer++;

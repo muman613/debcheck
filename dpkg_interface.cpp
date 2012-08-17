@@ -164,8 +164,11 @@ bool dpkg_is_package_installed(const char* szPackageName,
     for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
         pkg = *pIter;
 
-        if (strcmp(szPackageName, pkg->set->name) == 0) {
-            if (szPackageRevision != 0L) {
+        if ((pkg->status != pkginfo::stat_notinstalled) &&
+            (strcmp(szPackageName, pkg->set->name) == 0))
+        {
+            if ((szPackageRevision != 0L))
+            {
                 sVersion = versiondescribe( &pkg->configversion, vdew_nonambig);
 
                 if (strcmp(szPackageRevision, sVersion) == 0) {
@@ -200,7 +203,9 @@ bool dpkg_get_package_version(const char* szPackageName, char* sDstVersion, size
     for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
         pkg = *pIter;
 
-        if (strcmp(szPackageName, pkg->set->name) == 0) {
+        if ((pkg->status != pkginfo::stat_notinstalled) &&
+            (strcmp(szPackageName, pkg->set->name) == 0))
+        {
             sVersion = versiondescribe( &pkg->configversion, vdew_nonambig );
             strncpy(sDstVersion, sVersion, len);
 
@@ -225,7 +230,9 @@ bool dpkg_get_package_version(const char* szPackageName, STRING& sDstVersion)
     for (pIter = pkgArray.begin() ; pIter != pkgArray.end() ; pIter++) {
         pkg = *pIter;
 
-        if (strcmp(szPackageName, pkg->set->name) == 0) {
+        if ((pkg->status != pkginfo::stat_notinstalled) &&
+            (strcmp(szPackageName, pkg->set->name) == 0))
+        {
             sDstVersion = versiondescribe( &pkg->configversion, vdew_nonambig );
             return true;
         }

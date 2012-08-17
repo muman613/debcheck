@@ -12,5 +12,9 @@
 		<name>bash</name>
 		<version>4.2-2ubuntu2</version>
 	</package>
+	<package>
+		<name>xfishtank</name>
+		<version>*</version>
+	</package>
 </debcheck>
 
