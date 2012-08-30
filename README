@@ -1,0 +1,10 @@
+===============================================================================
+debcheck
+===============================================================================
+
+
+This project provides a tool to check for the existance of various debian packages
+installed on the system. It utilizes libdpkg in order to parse the debian
+database.
+
+
