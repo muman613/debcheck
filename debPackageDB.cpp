@@ -9,36 +9,56 @@
 #include "debPackageDB.h"
 #include "dbgutils.h"
 
-debPackageVersionSpec::debPackageVersionSpec(const char* sMatchVersion)
+debPackageVersionSpec::debPackageVersionSpec(STRING sMatchVersion)
+:   m_eSpecType(SPEC_FLAG_BADSPEC)
 {
     // ctor
-    parseversion(&m_stVersionMatch, sMatchVersion, NULL);
-    m_eSpecType = SPEC_FLAG_MATCH;
+    if (parseversion(&m_stVersionMatch, sMatchVersion.c_str(), NULL) == 0)
+        m_eSpecType = SPEC_FLAG_MATCH;
 }
 
 /**
  *
  */
 
-debPackageVersionSpec::debPackageVersionSpec(const char* sMatchVer,
-                          const char* sMinVer,
-                          const char* sMaxVer)
+debPackageVersionSpec::debPackageVersionSpec(STRING sMatchVer,
+                          STRING sMinVer,
+                          STRING sMaxVer)
 {
-    int    flags = SPEC_FLAG_MATCH;
+    int    flags = SPEC_FLAG_BADSPEC;
 
     // ctor
-    parseversion(&m_stVersionMatch, sMatchVer, NULL);
+    if (parseversion(&m_stVersionMatch, sMatchVer.c_str(), NULL) == 0)
+        flags |= SPEC_FLAG_MATCH;
 
-    if (sMinVer != 0L) {
-        parseversion(&m_stVersionMin, sMinVer, NULL);
-        flags |= SPEC_FLAG_GT_MIN;
+    if (sMinVer.length() > 0) {
+        if (parseversion(&m_stVersionMin, sMinVer.c_str(), NULL) == 0)
+            flags |= SPEC_FLAG_GT_MIN;
     }
-    if (sMaxVer != 0L) {
-        parseversion(&m_stVersionMax, sMaxVer, NULL);
-        flags |= SPEC_FLAG_LT_MAX;
+
+    if (sMaxVer.length() > 0L) {
+        if (parseversion(&m_stVersionMax, sMaxVer.c_str(), NULL) == 0)
+            flags |= SPEC_FLAG_LT_MAX;
     }
+
     m_eSpecType = (specTypeFlag)flags;
 }
+
+/**
+ *
+ */
+
+debPackageVersionSpec::debPackageVersionSpec(const debPackageVersionSpec& copy)
+{
+    m_stVersionMatch = copy.m_stVersionMatch;
+    m_stVersionMax   = copy.m_stVersionMax;
+    m_stVersionMin   = copy.m_stVersionMin;
+    m_eSpecType      = copy.m_eSpecType;
+}
+
+/**
+ *
+ */
 
 debPackageVersionSpec::~debPackageVersionSpec()
 {
@@ -49,16 +69,41 @@ debPackageVersionSpec::~debPackageVersionSpec()
  *
  */
 
+STRING debPackageVersionSpec::string() const
+{
+    STRING  sRes;
+
+    if (valid()) {
+        if (m_eSpecType == SPEC_FLAG_MATCH) {
+            sRes = versiondescribe( &m_stVersionMatch, vdew_nonambig );
+        } else {
+            sRes = "N/A";
+        }
+    } else {
+        sRes = "INVALID";
+    }
+
+    return sRes;
+}
+
+bool debPackageVersionSpec::valid() const {
+    return (m_eSpecType != SPEC_FLAG_BADSPEC)?true:false;
+}
+
+/**
+ *
+ */
+
 debPackage::debPackage(STRING sPackageName, STRING sPackageVersion)
 :   m_sPackageName(sPackageName),
-    m_sPackageVersion(sPackageVersion)
+    m_cPackageVersion(sPackageVersion)
 {
     // ctor
 }
 
 debPackage::debPackage(const debPackage& copy)
 :   m_sPackageName(copy.m_sPackageName),
-    m_sPackageVersion(copy.m_sPackageVersion)
+    m_cPackageVersion(copy.m_cPackageVersion)
 {
     // copy ctor
 }
@@ -73,13 +118,13 @@ STRING debPackage::PackageName() const {
 }
 
 STRING debPackage::PackageVersion() const {
-    return m_sPackageVersion;
+    return m_cPackageVersion.string();
 }
 
 debPackage& debPackage::operator = (const debPackage& copy)
 {
     m_sPackageName    = copy.m_sPackageName;
-    m_sPackageVersion = copy.m_sPackageVersion;
+    m_cPackageVersion = copy.m_cPackageVersion;
 
     return *this;
 }

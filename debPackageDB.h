@@ -13,17 +13,21 @@
 class debPackageVersionSpec {
 public:
     enum specTypeFlag {
-        SPEC_FLAG_MATCH = (1L << 0),
-        SPEC_FLAG_GT_MIN = (1L << 1),
-        SPEC_FLAG_LT_MAX = (1L << 2),
+        SPEC_FLAG_BADSPEC = 0,
+        SPEC_FLAG_MATCH   = (1L << 0),
+        SPEC_FLAG_GT_MIN  = (1L << 1),
+        SPEC_FLAG_LT_MAX  = (1L << 2),
     };
 
-    debPackageVersionSpec(const char* sMatchVer);
-    debPackageVersionSpec(const char* sMatchVer,
-                          const char* sMinVer,
-                          const char* sMaxVer);
+    debPackageVersionSpec(STRING sMatchVer);
+    debPackageVersionSpec(STRING sMatchVer,
+                          STRING sMinVer,
+                          STRING sMaxVer);
     debPackageVersionSpec(const debPackageVersionSpec& copy);
     virtual ~debPackageVersionSpec();
+
+    bool                valid() const;
+    STRING              string() const;
 
 protected:
 
@@ -45,13 +49,13 @@ public:
 
     debPackage& operator = (const debPackage& copy);
 
-    STRING      PackageName() const;
-    STRING      PackageVersion() const;
+    STRING                  PackageName() const;
+    STRING                  PackageVersion() const;
 
 protected:
-    STRING      m_sPackageName;
-    STRING      m_sPackageVersion;
-    int         m_nFlags;
+    STRING                  m_sPackageName;
+    debPackageVersionSpec   m_cPackageVersion;
+    int                     m_nFlags;
 };
 
 typedef std::vector<debPackage>             DEB_PACKAGE_VECTOR;
