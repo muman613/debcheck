@@ -3,6 +3,35 @@
 
 #include <stdio.h>
 #include "basicTypes.h"
+#include "dpkg_interface.h"
+
+/**
+ *  This class represents either an absolute version specification or a range
+ *  of versions which can be used in comparisons.
+ */
+
+class debPackageVersionSpec {
+public:
+    enum specTypeFlag {
+        SPEC_FLAG_MATCH = (1L << 0),
+        SPEC_FLAG_GT_MIN = (1L << 1),
+        SPEC_FLAG_LT_MAX = (1L << 2),
+    };
+
+    debPackageVersionSpec(const char* sMatchVer);
+    debPackageVersionSpec(const char* sMatchVer,
+                          const char* sMinVer,
+                          const char* sMaxVer);
+    debPackageVersionSpec(const debPackageVersionSpec& copy);
+    virtual ~debPackageVersionSpec();
+
+protected:
+
+    versionrevision     m_stVersionMatch;   ///< Version to match.
+    versionrevision     m_stVersionMin;     ///< Minimun acceptable version.
+    versionrevision     m_stVersionMax;     ///< Maximum acceptable version.
+    specTypeFlag        m_eSpecType;        ///< Type of vesion specification.
+};
 
 /**
  *

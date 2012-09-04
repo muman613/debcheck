@@ -9,6 +9,46 @@
 #include "debPackageDB.h"
 #include "dbgutils.h"
 
+debPackageVersionSpec::debPackageVersionSpec(const char* sMatchVersion)
+{
+    // ctor
+    parseversion(&m_stVersionMatch, sMatchVersion, NULL);
+    m_eSpecType = SPEC_FLAG_MATCH;
+}
+
+/**
+ *
+ */
+
+debPackageVersionSpec::debPackageVersionSpec(const char* sMatchVer,
+                          const char* sMinVer,
+                          const char* sMaxVer)
+{
+    int    flags = SPEC_FLAG_MATCH;
+
+    // ctor
+    parseversion(&m_stVersionMatch, sMatchVer, NULL);
+
+    if (sMinVer != 0L) {
+        parseversion(&m_stVersionMin, sMinVer, NULL);
+        flags |= SPEC_FLAG_GT_MIN;
+    }
+    if (sMaxVer != 0L) {
+        parseversion(&m_stVersionMax, sMaxVer, NULL);
+        flags |= SPEC_FLAG_LT_MAX;
+    }
+    m_eSpecType = (specTypeFlag)flags;
+}
+
+debPackageVersionSpec::~debPackageVersionSpec()
+{
+    // dtor
+}
+
+/**
+ *
+ */
+
 debPackage::debPackage(STRING sPackageName, STRING sPackageVersion)
 :   m_sPackageName(sPackageName),
     m_sPackageVersion(sPackageVersion)
